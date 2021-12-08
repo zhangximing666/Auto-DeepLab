@@ -53,7 +53,6 @@ using mindspore::dataset::vision::Rescale;
 using mindspore::dataset::vision::Normalize;
 using mindspore::dataset::vision::HWC2CHW;
 using mindspore::dataset::vision::HorizontalFlip;
-using mindspore::dataset::vision::SwapRedBlue;
 using mindspore::dataset::transforms::TypeCast;
 
 DEFINE_string(model_path, "/PATH/TO/Auto-DeepLab-s.mindir", "model path");
@@ -100,11 +99,10 @@ int main(int argc, char **argv) {
     auto decode = Decode();
     auto normalize = Normalize({123.675, 116.28, 103.53}, {58.395, 57.12, 57.375});
     auto hwc2chw = HWC2CHW();
-    auto swapredblue = SwapRedBlue();
     auto flip = HorizontalFlip();
     auto typeCast = TypeCast(DataType::kNumberTypeFloat32);
 
-    mindspore::dataset::Execute transformDecode({decode, swapredblue});
+    mindspore::dataset::Execute transformDecode(decode);
     mindspore::dataset::Execute transform({normalize, hwc2chw});
     mindspore::dataset::Execute transformFlip({normalize, flip, hwc2chw});
     mindspore::dataset::Execute transformCast(typeCast);

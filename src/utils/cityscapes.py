@@ -25,9 +25,10 @@ def normalize(image, label):
     """normalize"""
     mean = (0.485, 0.456, 0.406)
     std = (0.229, 0.224, 0.225)
-    image = cv2.imdecode(np.frombuffer(image, dtype=np.uint8), cv2.IMREAD_COLOR)
+    imageBGR = cv2.imdecode(np.frombuffer(image, dtype=np.uint8), cv2.IMREAD_COLOR)
     label = cv2.imdecode(np.frombuffer(label, dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
-    _img1 = image / 255.0
+    imageRGB = cv2.cvtColor(imageBGR, cv2.COLOR_BGR2RGB)
+    _img1 = imageRGB / 255.0
     _img2 = _img1 - mean
     _img3 = _img2 / std
     out_img = _img3.transpose((2, 0, 1))
@@ -40,15 +41,17 @@ def train_preprocess(image, label, crop_size=None, ignore_label=255):
 
     mean = (0.485, 0.456, 0.406)
     std = (0.229, 0.224, 0.225)
-    image = cv2.imdecode(np.frombuffer(image, dtype=np.uint8), cv2.IMREAD_COLOR)
+    imageBGR = cv2.imdecode(np.frombuffer(image, dtype=np.uint8), cv2.IMREAD_COLOR)
     label = cv2.imdecode(np.frombuffer(label, dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
+    imageRGB = cv2.cvtColor(imageBGR, cv2.COLOR_BGR2RGB)
+
 
     # flip images
     if random.random() < 0.5:
-        flipped_img = image[:, ::-1, :]
+        flipped_img = imageRGB[:, ::-1, :]
         flipped_lbl = label[:, ::-1]
     else:
-        flipped_img = image
+        flipped_img = imageRGB
         flipped_lbl = label
 
     # scale images
